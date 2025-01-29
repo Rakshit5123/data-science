@@ -1,0 +1,64 @@
+# Step 1: Load the dataset
+data <- read.csv("E:/dataset/mba_decision_dataset.csv")
+head(data)
+str(data)
+summary(data)
+
+# Step 2: Install and load necessary libraries
+install.packages("dplyr")  # If not installed yet
+install.packages("ggplot2")  # If not installed yet
+
+library(dplyr)
+library(ggplot2)
+
+# Step 3: Filter and manipulate data
+filtered_data <- filter(data, Undergraduate.GPA > 3.0)
+selected_columns <- select(data, Age, Undergraduate.GPA)
+data <- mutate(data, Salary_per_Year_of_Work = Annual.Salary..Before.MBA. / Years.of.Work.Experience)
+
+# Step 4: Handle missing values
+data$Undergraduate.GPA[is.na(data$Undergraduate.GPA)] <- mean(data$Undergraduate.GPA, na.rm = TRUE)
+
+# Step 5: Remove duplicates
+data <- unique(data)
+
+# Step 6: Normalize numerical columns
+data$Undergraduate.GPA <- scale(data$Undergraduate.GPA)
+data$Annual.Salary..Before.MBA. <- scale(data$Annual.Salary..Before.MBA.)
+
+# Step 7: Data Summarization (Basic Statistics)
+mean_gpa <- mean(data$Undergraduate.GPA)
+median_gpa <- median(data$Undergraduate.GPA)
+variance_gpa <- var(data$Undergraduate.GPA)
+sd_gpa <- sd(data$Undergraduate.GPA)
+
+cat("Mean of Undergraduate.GPA: ", mean_gpa, "\n")
+cat("Median of Undergraduate.GPA: ", median_gpa, "\n")
+cat("Variance of Undergraduate.GPA: ", variance_gpa, "\n")
+cat("Standard Deviation of Undergraduate.GPA: ", sd_gpa, "\n")
+
+# Step 8: Visualizations
+
+## Plot 1: Undergraduate GPA vs. Years of Work Experience
+ggplot(data, aes(x = Years.of.Work.Experience, y = Undergraduate.GPA, color = Networking.Importance)) +
+  geom_point(alpha = 0.6) +
+  labs(title = "Undergraduate GPA vs. Years of Work Experience", 
+       x = "Years of Work Experience", 
+       y = "Undergraduate GPA") +
+  theme_minimal()
+
+## Plot 2: Undergraduate GPA vs. Networking Importance
+ggplot(data, aes(x = Undergraduate.GPA, y = Networking.Importance)) +
+  geom_point(color = "purple", alpha = 0.6) +
+  labs(title = "Undergraduate GPA vs. Networking Importance", 
+       x = "Undergraduate GPA", 
+       y = "Networking Importance") +
+  theme_minimal()
+
+## Plot 3: Undergrad GPA vs Expected Post-MBA Salary
+ggplot(data, aes(x = Undergraduate.GPA, y = Expected.Post.MBA.Salary)) +
+  geom_point(alpha = 0.6, color = "blue") +
+  labs(title = "Undergraduate GPA vs Expected Post-MBA Salary", 
+       x = "Undergraduate GPA", 
+       y = "Expected Post-MBA Salary") +
+  theme_minimal()
